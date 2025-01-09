@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import "./App.css";
 
 const App = () => {
+  // Generate a grid of balls (dynamic to fill the screen)
+  const ballCount = 1500; // Adjust the number of balls if necessary
   const [balls, setBalls] = useState(
-    Array.from({ length: 100 }, (_, i) => ({
+    Array.from({ length: ballCount }, (_, i) => ({
       id: i,
       hovered: false,
     }))
@@ -40,4 +42,5 @@ const App = () => {
     </div>
   );
 };
+
 export default App;
