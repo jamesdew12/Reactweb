@@ -1,18 +1,18 @@
-import React from "react";
-import "./App.css";
+import React, { useEffect } from "react";
+import Sketch from "./Sketch";
+import p5 from "p5";
 
 const App = () => {
-  const balls = Array.from({ length: 10000 }); // Generate a large number of balls
+  useEffect(() => {
+    const myP5 = new p5(Sketch);
 
-  return (
-    <div className="App">
-      <div className="ball-container">
-        {balls.map((_, i) => (
-          <div key={i} className="ball"></div>
-        ))}
-      </div>
-    </div>
-  );
+    // Cleanup p5 instance on component unmount
+    return () => {
+      myP5.remove();
+    };
+  }, []);
+
+  return <div id="p5-container"></div>;
 };
 
 export default App;

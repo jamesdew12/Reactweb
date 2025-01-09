@@ -1,31 +1,15 @@
-.App {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  background: linear-gradient(135deg, #333, #555);
+body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow: hidden; /* Prevent scrollbars */
+  background: #add8e6; /* Soft light blue background */
 }
 
-.ball-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 5px); /* Automatically fills the width */
-  grid-gap: 0; /* No gap between balls */
+#p5-container canvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
-}
-
-.ball {
-  width: 5px;
-  height: 5px;
-  background: black;
-  border-radius: 50%;
-  transition: background 0.2s ease; /* Smooth hover effect */
-}
-
-.ball:hover {
-  background: white;
 }
