@@ -4,16 +4,17 @@ const Sketch = (p) => {
   let fadeTimers = []; // Array to track fade timers
   let revealForever = []; // Array to mark permanently revealed dots
   let colorHue = 0; // Initial hue for cycling colors
+  let isTextCache = []; // Cache for text dots
 
 
   // Bitmap for individual letters
   const letterBitmaps = {
     J: [
-      " 111 ",
-      "   1 ",
-      "   1 ",
-      "1  1 ",
-      " 111 ",
+      " 111",
+      "   1",
+      "   1",
+      "1  1",
+      " 111",
     ],
     A: [
       "  1  ",
@@ -96,16 +97,20 @@ const Sketch = (p) => {
 
   const text = "JAMES DE WINTON";
 
+
   p.setup = () => {
     p.createCanvas(p.windowWidth, p.windowHeight);
     setupGrid();
+    p.frameRate(30);
     initializeTimers();
+    cacheBitmapDots();
   };
 
   p.windowResized = () => {
     p.resizeCanvas(p.windowWidth, p.windowHeight);
     setupGrid();
     initializeTimers();
+    cacheBitmapDots();
   };
 
   // Setup grid dimensions
@@ -123,6 +128,15 @@ const Sketch = (p) => {
     revealForever = Array(rows)
       .fill(0)
       .map(() => Array(cols).fill(false)); // Default to false (not permanently revealed)
+  }
+    function cacheBitmapDots() {
+    isTextCache = Array(rows)
+      .fill(0)
+      .map((_, row) =>
+        Array(cols)
+          .fill(0)
+          .map((_, col) => isBitmapDot(col, row))
+      );
   }
 
   // Determine if a grid cell corresponds to a dot in the bitmap
@@ -162,7 +176,7 @@ const Sketch = (p) => {
 
   // Draw a soft circle with gradient edges
   function drawSoftCircle(x, y, diameter, colorValue, color) {
-    const layers = 15; // Number of gradient layers
+    const layers = 10; // Number of gradient layers
     for (let i = layers; i > 0; i--) {
       const alpha = p.map(i, 0, layers, 0, colorValue); // Decrease opacity for each layer
       const size = p.map(i, 0, layers, 0, diameter); // Decrease size for each layer
@@ -174,9 +188,10 @@ const Sketch = (p) => {
 
   p.draw = () => {
     p.background(0); // Black background
+    let brightness = (p.sin(p.millis() / 1000) + 1) * 127.5;
 
     if (areAllDotsRevealed()) {
-      colorHue = (colorHue + 1) % 360; // Increment hue and loop back at 360
+      brightness = (p.sin(p.millis() / 1000) + 1) * 127.5; // Oscillates between 0 and 255
     }
 
     for (let row = 0; row < rows; row++) {
@@ -185,7 +200,7 @@ const Sketch = (p) => {
         const y = row * ballSize;
 
         // Check if the dot is part of the bitmap
-        const isText = isBitmapDot(col, row);
+        const isText = isTextCache[row][col]; // Use cached value
 
         // Check if the mouse is hovering over this dot
         const isHovered =
@@ -216,9 +231,9 @@ const Sketch = (p) => {
 
         const color = isText
           ? areAllDotsRevealed()
-            ? [colorHue, 255, 255] // Cycle color for revealed dots
+            ? [brightness, brightness, brightness] // Oscillate between black and white
             : [255, 0, 0] // Red for text dots not fully revealed
-          : [255, 255, 255];
+          : [255, 255, 255]; // White for non-text dots
 
 
         // Draw the circle with softer edges
