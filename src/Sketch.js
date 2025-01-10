@@ -5,6 +5,7 @@ const Sketch = (p) => {
   let revealForever = []; // Array to mark permanently revealed dots
   let colorHue = 0; // Initial hue for cycling colors
   let isTextCache = []; // Cache for text dots
+  let softCircleImage; // Offscreen buffer for the soft circle
 
 
   // Bitmap for individual letters
