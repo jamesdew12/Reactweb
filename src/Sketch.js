@@ -181,7 +181,16 @@ const Sketch = (p) => {
   p.draw = () => {
 
     p.background(0); // Black background
-    let brightness = (p.sin(p.millis() / 1000) + 1) * 127.5;
+
+    const easeInOutQuad = (t) => {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    };
+
+    const pulsate = (t) => {
+      return easeInOutQuad((p.sin(t / 2000) + 1) / 2) * 255;
+    };
+    
+    let brightness = areAllDotsRevealed() ? pulsate(p.millis()) : (p.sin(p.millis() / 1000) + 1) * 127.5;
 
     if (areAllDotsRevealed()) {
       brightness = (p.sin(p.millis() / 3000) + 1) * 127.5; // Oscillates between 0 and 255 even more smoothly
@@ -204,7 +213,7 @@ const Sketch = (p) => {
 
         // If hovered, reset fade timer or mark as permanently revealed
         if (isHovered) {
-          if (areAllDotsRevealed()) {} else {
+          if (!areAllDotsRevealed()) {
           if (isText) {
             revealForever[row][col] = true; // Permanently reveal text dots
           }
@@ -229,7 +238,6 @@ const Sketch = (p) => {
             ? [brightness, brightness, brightness] // Oscillate between black and white
             : [255, 0, 0] // Red for text dots not fully revealed
           : [255, 255, 255]; // White for non-text dots
-
 
         // Draw the circle with softer edges
         drawSoftCircle(x + ballSize / 2, y + ballSize / 2, ballSize - 2, colorValue, color);
