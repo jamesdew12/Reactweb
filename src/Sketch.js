@@ -3,12 +3,13 @@ const Sketch = (p) => {
   let cols, rows; // Number of columns and rows in the grid
   let fadeTimers = []; // Array to track fade timers
   let revealForever = []; // Array to mark permanently revealed dots
+  let colorHue = 0; // Initial hue for cycling colors
+
 
   // Bitmap for individual letters
   const letterBitmaps = {
     J: [
       " 111 ",
-      "   1 ",
       "   1 ",
       "   1 ",
       "1  1 ",
@@ -29,7 +30,7 @@ const Sketch = (p) => {
       "1   1",
     ],
     E: [
-      "11111",
+      "1111",
       "1    ",
       "1111 ",
       "1    ",
@@ -174,6 +175,10 @@ const Sketch = (p) => {
   p.draw = () => {
     p.background(0); // Black background
 
+    if (areAllDotsRevealed()) {
+      colorHue = (colorHue + 1) % 360; // Increment hue and loop back at 360
+    }
+
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         const x = col * ballSize;
@@ -184,10 +189,10 @@ const Sketch = (p) => {
 
         // Check if the mouse is hovering over this dot
         const isHovered =
-          p.mouseX > x &&
-          p.mouseX < x + ballSize &&
-          p.mouseY > y &&
-          p.mouseY < y + ballSize;
+        p.mouseX > x - ballSize / 2 &&
+        p.mouseX < x + ballSize * 1.5 &&
+        p.mouseY > y - ballSize / 2 &&
+        p.mouseY < y + ballSize * 1.5;
 
         // If hovered, reset fade timer or mark as permanently revealed
         if (isHovered) {
@@ -209,14 +214,30 @@ const Sketch = (p) => {
           colorValue = p.lerp(255, 0, fadeProgress); // Fade to black
         }
 
-        // Set the dot color
-        const color = isText ? [255, 0, 0] : [255, 255, 255]; // Red for text dots, white otherwise
+        const color = isText
+          ? areAllDotsRevealed()
+            ? [colorHue, 255, 255] // Cycle color for revealed dots
+            : [255, 0, 0] // Red for text dots not fully revealed
+          : [255, 255, 255];
+
 
         // Draw the circle with softer edges
         drawSoftCircle(x + ballSize / 2, y + ballSize / 2, ballSize - 2, colorValue, color);
       }
     }
   };
+
+
+        function areAllDotsRevealed() {
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < cols; col++) {
+            if (isBitmapDot(col, row) && !revealForever[row][col]) {
+              return false; // If any dot is not revealed, return false
+            }
+          }
+        }
+        return true; // All dots are revealed
+      }
 };
 
 export default Sketch;
