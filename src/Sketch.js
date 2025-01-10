@@ -187,13 +187,13 @@ const Sketch = (p) => {
     };
 
     const pulsate = (t) => {
-      return easeInOutQuad((p.sin(t / 2000) + 1) / 2) * 255;
+      return easeInOutQuad((p.sin(t / 1500) + 1) / 2) * 255;
     };
     
     let brightness = areAllDotsRevealed() ? pulsate(p.millis()) : (p.sin(p.millis() / 1000) + 1) * 127.5;
 
     if (areAllDotsRevealed()) {
-      const revealDuration = 45000; // 45 seconds
+      const revealDuration = 30000; // 30 seconds
       const timeSinceAllRevealed = p.millis() - Math.max(...fadeTimers.flat());
 
       if (timeSinceAllRevealed < revealDuration) {
