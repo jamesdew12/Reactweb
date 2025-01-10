@@ -3,9 +3,7 @@ const Sketch = (p) => {
   let cols, rows; // Number of columns and rows in the grid
   let fadeTimers = []; // Array to track fade timers
   let revealForever = []; // Array to mark permanently revealed dots
-  let colorHue = 0; // Initial hue for cycling colors
   let isTextCache = []; // Cache for text dots
-  let softCircleImage; // Offscreen buffer for the soft circle
 
 
   // Bitmap for individual letters
@@ -173,26 +171,20 @@ const Sketch = (p) => {
     }
     return false; // Outside all letter bitmaps
   }
-
-
-  // Draw a soft circle with gradient edges
+  // Draw a circle with a solid color
   function drawSoftCircle(x, y, diameter, colorValue, color) {
-    const layers = 10; // Number of gradient layers
-    for (let i = layers; i > 0; i--) {
-      const alpha = p.map(i, 0, layers, 0, colorValue); // Decrease opacity for each layer
-      const size = p.map(i, 0, layers, 0, diameter); // Decrease size for each layer
-      p.fill(...color, alpha); // Set color with decreasing opacity
-      p.noStroke(); // Remove stroke
-      p.circle(x, y, size); // Draw circle
-    }
+    p.noStroke();
+    p.fill(color[0], color[1], color[2], colorValue);
+    p.ellipse(x, y, diameter, diameter);
   }
 
   p.draw = () => {
+
     p.background(0); // Black background
     let brightness = (p.sin(p.millis() / 1000) + 1) * 127.5;
 
     if (areAllDotsRevealed()) {
-      brightness = (p.sin(p.millis() / 1000) + 1) * 127.5; // Oscillates between 0 and 255
+      brightness = (p.sin(p.millis() / 3000) + 1) * 127.5; // Oscillates between 0 and 255 even more smoothly
     }
 
     for (let row = 0; row < rows; row++) {
@@ -212,10 +204,12 @@ const Sketch = (p) => {
 
         // If hovered, reset fade timer or mark as permanently revealed
         if (isHovered) {
+          if (areAllDotsRevealed()) {} else {
           if (isText) {
             revealForever[row][col] = true; // Permanently reveal text dots
           }
           fadeTimers[row][col] = p.millis(); // Reset fade timer for all dots
+        }
         }
 
         // Calculate time since last hovered
