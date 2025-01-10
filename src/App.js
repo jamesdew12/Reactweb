@@ -1,18 +1,40 @@
-import React, { useEffect } from "react";
-import Sketch from "./Sketch";
-import p5 from "p5";
+import React, { useEffect, useRef, useState } from 'react';
+import p5 from 'p5';
+import Sketch from './Sketch';
 
 const App = () => {
-  useEffect(() => {
-    const myP5 = new p5(Sketch);
+  const sketchRef = useRef();
+  const snakeRef = useRef();
+  const [isSketchRunning, setIsSketchRunning] = useState(true);
 
-    // Cleanup p5 instance on component unmount
+  useEffect(() => {
+    const myP5 = new p5((p) => {
+      Sketch(p, setIsSketchRunning);
+    }, sketchRef.current);
+
     return () => {
       myP5.remove();
     };
   }, []);
 
-  return <div id="p5-container"></div>;
+  useEffect(() => {
+    const snake = new p5((p) => {
+      console.log('Snake effect running');
+    }, snakeRef.current);
+
+    return () => {
+      snake.remove();
+      console.log('Snake effect cleanup');
+    };
+  }, []);
+
+  return (
+    <div>
+      <div ref={sketchRef}></div>
+      <div ref={snakeRef}></div>
+      {!isSketchRunning && <p>The sketch has stopped.</p>}
+    </div>
+  );
 };
 
 export default App;

@@ -193,7 +193,15 @@ const Sketch = (p) => {
     let brightness = areAllDotsRevealed() ? pulsate(p.millis()) : (p.sin(p.millis() / 1000) + 1) * 127.5;
 
     if (areAllDotsRevealed()) {
-      brightness = (p.sin(p.millis() / 3000) + 1) * 127.5; // Oscillates between 0 and 255 even more smoothly
+      const revealDuration = 45000; // 45 seconds
+      const timeSinceAllRevealed = p.millis() - Math.max(...fadeTimers.flat());
+
+      if (timeSinceAllRevealed < revealDuration) {
+      brightness = (p.sin(p.millis() / 2200) + 1) * 127.5; // Oscillates between 0 and 255 even more smoothly
+      } else {
+      brightness = 0; // Stop oscillation and set brightness to 255
+      p.noLoop(); // Stop the animation
+      }
     }
 
     for (let row = 0; row < rows; row++) {
