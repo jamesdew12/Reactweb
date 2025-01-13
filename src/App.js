@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import p5 from 'p5';
-import Sketch from './Sketch';
+import Snake from './Snake';
 
 const App = () => {
   const sketchRef = useRef();
@@ -8,7 +8,7 @@ const App = () => {
 
   useEffect(() => {
     const myP5 = new p5((p) => {
-      Sketch(p, setIsSketchRunning);
+      Snake(p, setIsSketchRunning);
     }, sketchRef.current);
 
     return () => {
