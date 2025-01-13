@@ -1,9 +1,15 @@
-const Sketch = (p) => {
+const Sketch = (p, setToggleState) => {
   const ballSize = 20; // Size of each ball in pixels
   let cols, rows; // Number of columns and rows in the grid
   let fadeTimers = []; // Array to track fade timers
   let revealForever = []; // Array to mark permanently revealed dots
   let isTextCache = []; // Cache for text dots
+  let toggle = false; 
+
+  const toggleState = () => {
+    toggle = !toggle; // Update the global variable
+    setToggleState(toggle); // Update the state in the parent App component
+  };
 
 
   // Bitmap for individual letters
@@ -193,14 +199,18 @@ const Sketch = (p) => {
     let brightness = areAllDotsRevealed() ? pulsate(p.millis()) : (p.sin(p.millis() / 1000) + 1) * 127.5;
 
     if (areAllDotsRevealed()) {
-      const revealDuration = 3000; // 30 seconds
+      const revealDuration = 30000; // 30 seconds
+      const revealDuration2 = 33000; // 30 seconds
       const timeSinceAllRevealed = p.millis() - Math.max(...fadeTimers.flat());
 
       if (timeSinceAllRevealed < revealDuration) {
-      brightness = (p.sin(p.millis() / 2200) + 1) * 127.5; // Oscillates between 0 and 255 even more smoothly
+        brightness = (p.sin(p.millis() / 2200) + 1) * 127.5; // Oscillates between 0 and 255 even more smoothly
+      } else { if (timeSinceAllRevealed < revealDuration2) {
+        brightness = 255; // Stop oscillation and set brightness to 0
       } else {
-      brightness = 0; // Stop oscillation and set brightness to 255
-      p.noLoop(); // Stop the animation
+        toggleState(); // Toggle the state to restart the sketch
+        p.remove() // Stop the sketch
+      }
       }
     }
 
@@ -244,8 +254,8 @@ const Sketch = (p) => {
         const color = isText
           ? areAllDotsRevealed()
             ? [brightness, brightness, brightness] // Oscillate between black and white
-            : [255, 0, 0] // Red for text dots not fully revealed
-          : [255, 255, 255]; // White for non-text dots
+            : [255, 111, 97] // Red for text dots not fully revealed
+          : [245, 245, 245]; // White for non-text dots
 
         // Draw the circle with softer edges
         drawSoftCircle(x + ballSize / 2, y + ballSize / 2, ballSize - 2, colorValue, color);

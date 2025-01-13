@@ -55,7 +55,7 @@ const Snake = (p) => {
       p.text(formattedText, p.width / 2, 10);
       
 
-      if (snake.length === 12) {
+      if (snake.length === 11) {
         window.location.href = "https://jamesdewinton.com/nothing-tech";
       }
 
@@ -95,7 +95,7 @@ function freezeAndRestart() {
   function drawSnake() {
     p.fill(0);
     for (let part of snake) {
-        drawSoftCircle(part.x * ballSize + ballSize / 2, part.y * ballSize + ballSize / 2, ballSize, 255, [0, 0, 0]);
+        drawSoftCircle(part.x * ballSize + ballSize / 2, part.y * ballSize + ballSize / 2, ballSize, 255, [245, 245, 245]);
     }
   }
 
@@ -108,7 +108,7 @@ function freezeAndRestart() {
 
   function drawFood() {
 
-    drawSoftCircle(food.x * ballSize + ballSize / 2, food.y * ballSize + ballSize / 2, ballSize, 255, [255, 0, 0]);
+    drawSoftCircle(food.x * ballSize + ballSize / 2, food.y * ballSize + ballSize / 2, ballSize, 255, [255, 111, 97]);
   }
 
   p.keyPressed = (kp) => {
