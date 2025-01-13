@@ -193,7 +193,7 @@ const Sketch = (p) => {
     let brightness = areAllDotsRevealed() ? pulsate(p.millis()) : (p.sin(p.millis() / 1000) + 1) * 127.5;
 
     if (areAllDotsRevealed()) {
-      const revealDuration = 30000; // 30 seconds
+      const revealDuration = 3000; // 30 seconds
       const timeSinceAllRevealed = p.millis() - Math.max(...fadeTimers.flat());
 
       if (timeSinceAllRevealed < revealDuration) {
