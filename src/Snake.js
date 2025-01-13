@@ -47,9 +47,9 @@ const Snake = (p) => {
     // Display message when snake length is 5
 
       p.fill(0);
-      p.textSize(32);
-      p.textFont('Helvetica');
-      p.textStyle(p.BOLD);
+      p.textSize(36); // Increase text size for more emphasis
+      p.textFont('Arial Black'); // Use a bold and stylish font
+      p.textStyle(p.BOLD); // Ensure bold styling is applied
       p.textAlign(p.CENTER, p.TOP);
       const formattedText = `${snake.length - 5} / 7`;
       p.text(formattedText, p.width / 2, 10);
@@ -95,7 +95,7 @@ function freezeAndRestart() {
   function drawSnake() {
     p.fill(0);
     for (let part of snake) {
-        drawSoftCircle(part.x * ballSize + ballSize / 2, part.y * ballSize + ballSize / 2, ballSize, 255, [245, 245, 245]);
+        drawSoftCircle(part.x * ballSize + ballSize / 2, part.y * ballSize + ballSize / 2, ballSize, 255, [0, 0, 0]);
     }
   }
 
